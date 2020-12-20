@@ -349,17 +349,66 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="example" class="section level2">
 <h2>Example</h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(StatComp20060)</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="co">#LDA</span></span>
-<span id="cb1-3"><a href="#cb1-3"></a>n0 &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span> <span class="op">:</span><span class="st"> </span><span class="dv">150</span>, <span class="dv">100</span>)</span>
-<span id="cb1-4"><a href="#cb1-4"></a>iris.train &lt;-<span class="st"> </span>iris[n0, ]</span>
-<span id="cb1-5"><a href="#cb1-5"></a>iris.test &lt;-<span class="st"> </span>iris[<span class="op">-</span>n0, ]</span>
-<span id="cb1-6"><a href="#cb1-6"></a>iris.lda &lt;-<span class="st"> </span><span class="kw">lda.method</span>(iris.train[, <span class="dv">-5</span>], iris.train[, <span class="dv">5</span>],<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)<span class="op">/</span><span class="dv">3</span>)</span>
-<span id="cb1-7"><a href="#cb1-7"></a>pre.lda &lt;-<span class="st"> </span><span class="kw">lda.predict</span>(iris.lda, iris.test[, <span class="dv">1</span> <span class="op">:</span><span class="st"> </span><span class="dv">4</span>])</span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="co">#QDA</span></span>
-<span id="cb1-9"><a href="#cb1-9"></a>n0 &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span> <span class="op">:</span><span class="st"> </span><span class="dv">150</span>, <span class="dv">100</span>)</span>
-<span id="cb1-10"><a href="#cb1-10"></a>iris.train &lt;-<span class="st"> </span>iris[n0, ]</span>
-<span id="cb1-11"><a href="#cb1-11"></a>iris.qda &lt;-<span class="st"> </span><span class="kw">qda.method</span>(iris.train[, <span class="dv">-5</span>], iris.train[, <span class="dv">5</span>],<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)<span class="op">/</span><span class="dv">3</span>)</span>
-<span id="cb1-12"><a href="#cb1-12"></a>pre.qda &lt;-<span class="st"> </span><span class="kw">qda.predict</span>(iris.qda, iris.test[, <span class="dv">1</span> <span class="op">:</span><span class="st"> </span><span class="dv">4</span>]) </span></code></pre></div>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">library</span>(MASS)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">library</span>(caret)</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co">#&gt; 载入需要的程辑包：lattice</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="co">#&gt; 载入需要的程辑包：ggplot2</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="kw">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb1-8"><a href="#cb1-8"></a>n0 &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span> <span class="op">:</span><span class="st"> </span><span class="dv">150</span>, <span class="dv">50</span>)</span>
+<span id="cb1-9"><a href="#cb1-9"></a>iris.train &lt;-<span class="st"> </span>iris[<span class="op">-</span>n0, ]</span>
+<span id="cb1-10"><a href="#cb1-10"></a>iris.test &lt;-<span class="st"> </span>iris[n0, ]</span>
+<span id="cb1-11"><a href="#cb1-11"></a>ptr &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> iris.train, <span class="kw">aes</span>(Petal.Length, Petal.Width, <span class="dt">color =</span> Species))</span>
+<span id="cb1-12"><a href="#cb1-12"></a>ptr &lt;-<span class="st"> </span>ptr <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span><span class="kw">theme_bw</span>() <span class="op">+</span><span class="st"> </span><span class="kw">theme</span>(<span class="dt">panel.grid =</span> <span class="kw">element_blank</span>())</span>
+<span id="cb1-13"><a href="#cb1-13"></a>ptr</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">##LDA</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>iris.lda &lt;-<span class="st"> </span><span class="kw">lda.method</span>(iris.train[, <span class="dv">-5</span>], iris.train[, <span class="dv">5</span>],<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)<span class="op">/</span><span class="dv">3</span>)</span>
+<span id="cb2-3"><a href="#cb2-3"></a>pre.lda &lt;-<span class="st"> </span><span class="kw">lda.predict</span>(iris.lda, iris.test[, <span class="dv">1</span> <span class="op">:</span><span class="st"> </span><span class="dv">4</span>])</span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="kw">print</span>(iris.lda)</span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="co">#&gt; $beta0</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="co">#&gt; [1] -110.74388  -82.11578 -106.34936</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="co">#&gt; </span></span>
+<span id="cb2-8"><a href="#cb2-8"></a><span class="co">#&gt; $beta1</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a><span class="co">#&gt;          [,1]      [,2]       [,3]       [,4]</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="co">#&gt; [1,] 31.16599 26.612780 -14.426399 -36.795906</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a><span class="co">#&gt; [2,] 21.45920  9.815523   5.065595 -10.126470</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a><span class="co">#&gt; [3,] 18.78523  5.494039   9.857199   7.672631</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a><span class="co">#&gt; </span></span>
+<span id="cb2-14"><a href="#cb2-14"></a><span class="co">#&gt; $label</span></span>
+<span id="cb2-15"><a href="#cb2-15"></a><span class="co">#&gt; [1] setosa     versicolor virginica </span></span>
+<span id="cb2-16"><a href="#cb2-16"></a><span class="co">#&gt; Levels: setosa versicolor virginica</span></span>
+<span id="cb2-17"><a href="#cb2-17"></a><span class="co">#misclassification error</span></span>
+<span id="cb2-18"><a href="#cb2-18"></a><span class="kw">sum</span>(pre.lda <span class="op">!=</span><span class="st"> </span>iris.test[, <span class="dv">5</span>])<span class="op">/</span><span class="kw">length</span>(iris.test[, <span class="dv">5</span>])</span>
+<span id="cb2-19"><a href="#cb2-19"></a><span class="co">#&gt; [1] 0.06</span></span>
+<span id="cb2-20"><a href="#cb2-20"></a><span class="kw">confusionMatrix</span>(pre.lda, iris.test[, <span class="dv">5</span>])<span class="op">$</span>table</span>
+<span id="cb2-21"><a href="#cb2-21"></a><span class="co">#&gt;             Reference</span></span>
+<span id="cb2-22"><a href="#cb2-22"></a><span class="co">#&gt; Prediction   setosa versicolor virginica</span></span>
+<span id="cb2-23"><a href="#cb2-23"></a><span class="co">#&gt;   setosa         15          0         0</span></span>
+<span id="cb2-24"><a href="#cb2-24"></a><span class="co">#&gt;   versicolor      0         14         2</span></span>
+<span id="cb2-25"><a href="#cb2-25"></a><span class="co">#&gt;   virginica       0          1        18</span></span>
+<span id="cb2-26"><a href="#cb2-26"></a>iris.LDA &lt;-<span class="st"> </span><span class="kw">lda</span>(Species<span class="op">~</span>., <span class="dt">data =</span> iris.train, <span class="dt">prior =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>)<span class="op">/</span><span class="dv">3</span>)</span>
+<span id="cb2-27"><a href="#cb2-27"></a>pre.LDA &lt;-<span class="st"> </span><span class="kw">predict</span>(iris.LDA, <span class="dt">newdata =</span> iris.test)</span>
+<span id="cb2-28"><a href="#cb2-28"></a><span class="co">#compare with lda</span></span>
+<span id="cb2-29"><a href="#cb2-29"></a><span class="kw">sum</span>(pre.lda <span class="op">!=</span><span class="st"> </span>pre.LDA<span class="op">$</span>class)</span>
+<span id="cb2-30"><a href="#cb2-30"></a><span class="co">#&gt; [1] 0</span></span>
+<span id="cb2-31"><a href="#cb2-31"></a><span class="co">##QDA</span></span>
+<span id="cb2-32"><a href="#cb2-32"></a>iris.qda &lt;-<span class="st"> </span><span class="kw">qda.method</span>(iris.train[, <span class="dv">-5</span>], iris.train[, <span class="dv">5</span>],<span class="kw">c</span>(<span class="dv">35</span><span class="op">/</span><span class="dv">100</span>, <span class="dv">35</span><span class="op">/</span><span class="dv">100</span>, <span class="dv">30</span><span class="op">/</span><span class="dv">100</span>))</span>
+<span id="cb2-33"><a href="#cb2-33"></a>pre.qda &lt;-<span class="st"> </span><span class="kw">qda.predict</span>(iris.qda, iris.test[, <span class="dv">1</span> <span class="op">:</span><span class="st"> </span><span class="dv">4</span>])</span>
+<span id="cb2-34"><a href="#cb2-34"></a><span class="co">#misclassification error</span></span>
+<span id="cb2-35"><a href="#cb2-35"></a><span class="kw">sum</span>(pre.qda <span class="op">!=</span><span class="st"> </span>iris.test[, <span class="dv">5</span>])<span class="op">/</span><span class="kw">length</span>(iris.test[, <span class="dv">5</span>])</span>
+<span id="cb2-36"><a href="#cb2-36"></a><span class="co">#&gt; [1] 0.04</span></span>
+<span id="cb2-37"><a href="#cb2-37"></a><span class="kw">confusionMatrix</span>(pre.qda, iris.test[, <span class="dv">5</span>])<span class="op">$</span>table</span>
+<span id="cb2-38"><a href="#cb2-38"></a><span class="co">#&gt;             Reference</span></span>
+<span id="cb2-39"><a href="#cb2-39"></a><span class="co">#&gt; Prediction   setosa versicolor virginica</span></span>
+<span id="cb2-40"><a href="#cb2-40"></a><span class="co">#&gt;   setosa         15          0         0</span></span>
+<span id="cb2-41"><a href="#cb2-41"></a><span class="co">#&gt;   versicolor      0         14         1</span></span>
+<span id="cb2-42"><a href="#cb2-42"></a><span class="co">#&gt;   virginica       0          1        19</span></span>
+<span id="cb2-43"><a href="#cb2-43"></a><span class="co">#compare with qda</span></span>
+<span id="cb2-44"><a href="#cb2-44"></a>iris.QDA &lt;-<span class="st"> </span><span class="kw">qda</span>(Species<span class="op">~</span>., <span class="dt">data =</span> iris.train)</span>
+<span id="cb2-45"><a href="#cb2-45"></a>pre.QDA &lt;-<span class="st"> </span><span class="kw">predict</span>(iris.QDA, <span class="dt">newdata =</span> iris.test)</span>
+<span id="cb2-46"><a href="#cb2-46"></a><span class="kw">sum</span>(pre.qda <span class="op">!=</span><span class="st"> </span>pre.QDA<span class="op">$</span>class)</span>
+<span id="cb2-47"><a href="#cb2-47"></a><span class="co">#&gt; [1] 0</span></span></code></pre></div>
 </div>
 <div id="pi" class="section level2">
 <h2>2.PI</h2>
@@ -370,8 +419,10 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="basic-idea-1" class="section level3">
 <h3>Basic idea</h3>
 <p><span class="math display">\[\frac{Area\ of\ Circle}{Area\ of\ Square}=\frac{\pi r^2}{(2r)^2}=\frac{\pi}{4}\]</span></p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">library</span>(StatComp20060)</span>
-<span id="cb2-2"><a href="#cb2-2"></a>pi &lt;-<span class="st"> </span><span class="kw">piSugar</span>(<span class="dv">1000</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">library</span>(StatComp20060)</span>
+<span id="cb3-2"><a href="#cb3-2"></a>pi &lt;-<span class="st"> </span><span class="kw">piSugar</span>(<span class="dv">1000</span>)</span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="kw">print</span>(pi)</span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="co">#&gt; [1] 3.172</span></span></code></pre></div>
 </div>
 </div>
 <div id="references" class="section level2">
