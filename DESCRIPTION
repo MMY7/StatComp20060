@@ -7,7 +7,7 @@ Author: Ma Mengyuan
 Maintainer: Ma Mengyuan <mmy@mail.ustc.edu.cn>
 Description: It contains all the homework answers and functions for the research project.
 License: GPL (>= 2)
-Imports: Rcpp (>= 1.0.4), DAAG, datasets, MASS, bootstrap, boot, RANN, energy, Ball, nloptr, base, microbenchmark
+Imports: Rcpp (>= 1.0.4), DAAG, datasets, MASS, bootstrap, boot, RANN, energy, Ball, nloptr, base, microbenchmark,caret,ggplot2
 LinkingTo: Rcpp
 RoxygenNote: 7.1.1
 Suggests: knitr, rmarkdown
