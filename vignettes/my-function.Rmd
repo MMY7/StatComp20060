@@ -1,0 +1,83 @@
+---
+title: "Functions from research project"
+author: "Ma Mengyuan"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Functions from research project}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+## 1.DA
+
+### Introduction
+
+Document `DA`, whose full name is "discriminant analysis", is written by R languague. The R document contains two algorithms, including LDA and QDA.
+
+### Basic idea
+
++ **LDA**
+
+Suppose that we model each class density as multivariate Gaussian
+$$f_k(x) = \frac{1}{(2π)^{p/2}|\Sigma_k|^{1/2}}e^{−\frac{1}{2} (x−\mu_k)^T\Sigma^{−1}_k(x-\mu_k)}\qquad\qquad\qquad\qquad(1)$$
+
+Linear discriminant analysis (LDA) arises in the special case when we assume that the classes have a common covariance matrix $\Sigma_k = \Sigma, \forall k$. In comparing two classes $k$ and $l$, it is sufficient to look at the log-ratio, and we see that
+$$\begin{aligned} 
+&log \frac{Pr(G = k|X = x)}{Pr(G = l|X = x)} 
+\\=& log\frac{f_k(x)}{f_k(x)} + log \frac{\pi_k}{\pi_l} \qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\quad(2)\\
+=& log\frac{π_k}{π_l} − \frac{1}{2}(\mu_k + \mu_l)^T\Sigma^{−1}(\mu_k − \mu_l) + x^T \Sigma^{−1}(\mu_k − \mu_l)
+\end{aligned} $$
+an equation linear in $x$. Therefore, the linear discriminant functions
+$$\delta_k(x) = x^T \Sigma^{−1}\mu_k − \frac{1}{2}\mu^T_k \Sigma^{−1}\mu_k + log \pi_k\qquad\qquad\qquad\qquad\quad(3)$$
+are an equivalent description of the decision rule, with $G(x)=argmax _k\delta_k(x)$.
+
++ **QDA**
+
+ Getting back to the general discriminant problem (1), if the $\Sigma_k$ are not assumed to be equal, then the convenient cancellations in (2) do not
+occur; in particular the pieces quadratic in $x$ remain. We then get quadratic discriminant functions (QDA),
+$$\delta_k(x) = −\frac12 log |\Sigma_k| − \frac12(x − \mu_k)^T \Sigma^{−1}_k (x − \mu_k) + log \pi_k\qquad\quad(4)$$
+
+## Example
+```{r}
+library(StatComp20060)
+#LDA
+n0 <- sample(1 : 150, 100)
+iris.train <- iris[n0, ]
+iris.test <- iris[-n0, ]
+iris.lda <- lda.method(iris.train[, -5], iris.train[, 5],c(1, 1, 1)/3)
+pre.lda <- lda.predict(iris.lda, iris.test[, 1 : 4])
+#QDA
+n0 <- sample(1 : 150, 100)
+iris.train <- iris[n0, ]
+iris.qda <- qda.method(iris.train[, -5], iris.train[, 5],c(1, 1, 1)/3)
+pre.qda <- qda.predict(iris.qda, iris.test[, 1 : 4]) 
+```
+
+## 2.PI
+
+### Introduction
+Document `PI` is written by C++ languague and contains one function.It basically calculates PI using the Monte Carlo method.
+
+### Basic idea
+$$\frac{Area\ of\ Circle}{Area\ of\ Square}=\frac{\pi r^2}{(2r)^2}=\frac{\pi}{4}$$
+
+```{r}
+library(StatComp20060)
+pi <- piSugar(1000)
+```
+
+
+
+
+## References
+
+Hastie T , Tibshirani R , Friedman J . The elements of statistical learning. 2001[J]. Journal of the Royal Statistical Society, 2004.

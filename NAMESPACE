@@ -1,0 +1,5 @@
+useDynLib(StatComp20060, .registration=TRUE)
+exportPattern("^[[:alpha:]]+")
+importFrom(Rcpp, evalCpp)
+importFrom("stats", "cov", "mahalanobis", "pt", "rnorm", "runif",
+               "uniroot", "var")
